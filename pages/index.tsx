@@ -1,18 +1,25 @@
-import { NextPage } from 'next';
+import axios from 'axios';
+import { GetServerSideProps, NextPage } from 'next';
 import styled from 'styled-components';
 import TodoList from '../components/TodoList';
 import { TodoType } from '../types/todo';
 
-const todos: TodoType[] = [
-  { id: 1, text: 'sadjfalsdk', color: 'red', checked: false },
-  { id: 2, text: 'sadjfalsdk', color: 'orange', checked: false },
-  { id: 3, text: 'sadjfalsdk', color: 'yellow', checked: true },
-  { id: 4, text: 'sadjfalsdk', color: 'green', checked: false },
-  { id: 5, text: 'sadjfalsdk', color: 'blue', checked: false },
-  { id: 6, text: 'sadjfalsdk', color: 'navy', checked: false },
-];
-
-const index: NextPage = () => {
+const app: NextPage = ({ todos }: any) => {
   return <TodoList todos={todos} />;
 };
-export default index;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    const { data } = await axios.get<TodoType[]>('http://localhost:3000/api/todos');
+    return {
+      props: {
+        todos: data,
+      },
+    };
+  } catch (err) {
+    console.error(err);
+    return { props: {} };
+  }
+};
+
+export default app;

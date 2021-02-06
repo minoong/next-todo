@@ -69,6 +69,12 @@ const Container = styled.div`
       height: 3.25rem;
       border-bottom: 1px solid ${palette.gray};
 
+      transition: all 0.3s;
+
+      :hover {
+        background-color: #dfdfdf;
+      }
+
       .todo-left-side {
         width: 100%;
         height: 100%;
