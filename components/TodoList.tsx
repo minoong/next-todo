@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useCallback, useMemo, useState } from 'react';
+import { useRouter } from 'next/dist/client/router';
 import styled from 'styled-components';
 import palette from '../styles/palette';
 import { TodoType } from '../types/todo';
 import TrashCanIcon from '../public/statics/svg/trash-can.svg';
 import CheckMarkIcon from '../public/statics/svg/check-mark.svg';
-import { checkTodoAPI } from '../lib/api/todos/todo';
-import { useRouter } from 'next/dist/client/router';
+import { checkTodoAPI, deleteTodoAPI } from '../lib/api/todos/todo';
 
 const Container = styled.div`
   width: 100%;
@@ -154,7 +154,6 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
 
   const checkTodo = async (id: number) => {
     try {
-      console.log(id);
       await checkTodoAPI(id);
       // router.reload();
       // router.push('/');
@@ -166,6 +165,16 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
         return todo;
       });
 
+      setLocalTodos(newTodos);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteTodo = async (id: number) => {
+    try {
+      await deleteTodoAPI(id);
+      const newTodos = localTodos.filter((todo) => todo.id !== id);
       setLocalTodos(newTodos);
     } catch (error) {
       console.error(error);
@@ -197,7 +206,7 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
             <div className="todo-right-side">
               {todo.checked && (
                 <>
-                  <TrashCanIcon className="todo-trash-can" />
+                  <TrashCanIcon className="todo-trash-can" onClick={() => deleteTodo(todo.id)} />
                   <CheckMarkIcon className="todo-check-mark" onClick={() => checkTodo(todo.id)} />
                 </>
               )}
